@@ -43,6 +43,11 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import com.android.settings.R;
+import android.os.SELinux;
+import android.util.Log;
+
+import com.xtended.utils.SuShell;
+import com.xtended.utils.SuTask;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -75,6 +80,13 @@ public class XtraSettings extends SettingsPreferenceFragment implements
     private CustomSeekBarPreference mCornerRadius;
     private CustomSeekBarPreference mContentPadding;
     private SecureSettingSwitchPreference mRoundedFwvals;
+
+    private static final String SELINUX_CATEGORY = "selinux";
+    private static final String PREF_SELINUX_MODE = "selinux_mode";
+    private static final String PREF_SELINUX_PERSISTENCE = "selinux_persistence";
+
+    private SwitchPreference mSelinuxMode;
+    private SwitchPreference mSelinuxPersistence;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -119,6 +131,18 @@ public class XtraSettings extends SettingsPreferenceFragment implements
         // Rounded use Framework Values
         mRoundedFwvals = (SecureSettingSwitchPreference) findPreference(SYSUI_ROUNDED_FWVALS);
         mRoundedFwvals.setOnPreferenceChangeListener(this);
+
+      // SELinux
+      Preference selinuxCategory = findPreference(SELINUX_CATEGORY);
+      mSelinuxMode = (SwitchPreference) findPreference(PREF_SELINUX_MODE);
+      mSelinuxMode.setChecked(SELinux.isSELinuxEnforced());
+      mSelinuxMode.setOnPreferenceChangeListener(this);
+
+      mSelinuxPersistence = (SwitchPreference) findPreference(PREF_SELINUX_PERSISTENCE);
+      mSelinuxPersistence.setOnPreferenceChangeListener(this);
+      mSelinuxPersistence.setChecked(getContext()
+          .getSharedPreferences("selinux_pref", Context.MODE_PRIVATE)
+          .contains(PREF_SELINUX_MODE));
     }
 
     @Override
@@ -153,9 +177,20 @@ public class XtraSettings extends SettingsPreferenceFragment implements
         } else if (preference == mRoundedFwvals) {
             restoreCorners();
             return true;
+
+        if (preference == mSelinuxMode) {
+        boolean enabled = (Boolean) newValue;
+        new SwitchSelinuxTask(getActivity()).execute(enabled);
+        setSelinuxEnabled(enabled, mSelinuxPersistence.isChecked());
+        return true;
+      } else if (preference == mSelinuxPersistence) {
+        setSelinuxEnabled(mSelinuxMode.isChecked(), (Boolean) newValue);
+        return true;
+
         }
         return false;
     }
+}
 
     @Override
     public int getMetricsCategory() {
@@ -176,6 +211,50 @@ public class XtraSettings extends SettingsPreferenceFragment implements
         int resourceIdRadius = (int) ctx.getResources().getDimension(com.android.internal.R.dimen.rounded_corner_radius);
         mCornerRadius.setValue((int) (resourceIdRadius / density));
     }
+
+    private void setSelinuxEnabled(boolean status, boolean persistent) {
+      SharedPreferences.Editor editor = getContext()
+          .getSharedPreferences("selinux_pref", Context.MODE_PRIVATE).edit();
+      if (persistent) {
+        editor.putBoolean(PREF_SELINUX_MODE, status);
+      } else {
+        editor.remove(PREF_SELINUX_MODE);
+      }
+      editor.apply();
+      mSelinuxMode.setChecked(status);
+    }
+
+    private class SwitchSelinuxTask extends SuTask<Boolean> {
+      public SwitchSelinuxTask(Context context) {
+        super(context);
+      }
+      @Override
+      protected void sudoInBackground(Boolean... params) throws SuShell.SuDeniedException {
+        if (params.length != 1) {
+          Log.e(TAG, "SwitchSelinuxTask: invalid params count");
+          return;
+        }
+        if (params[0]) {
+          SuShell.runWithSuCheck("setenforce 1");
+        } else {
+          SuShell.runWithSuCheck("setenforce 0");
+        }
+    }
+
+      @Override
+      protected void onPostExecute(Boolean result) {
+        super.onPostExecute(result);
+        if (!result) {
+          // Did not work, so restore actual value
+          setSelinuxEnabled(SELinux.isSELinuxEnforced(), mSelinuxPersistence.isChecked());
+        }
+      }
+    }
+
+
+    /**
+     * For Search
+     */
 
     public static final SearchIndexProvider SEARCH_INDEX_DATA_PROVIDER =
             new BaseSearchIndexProvider() {
