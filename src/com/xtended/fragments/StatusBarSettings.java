@@ -64,12 +64,18 @@ public class StatusBarSettings extends SettingsPreferenceFragment implements
         Preference.OnPreferenceChangeListener {
 
     private static final String PREF_KEY_CUTOUT = "cutout_settings";
+    private static final String KEY_USE_OLD_MOBILETYPE = "use_old_mobiletype";
+
+    private SwitchPreference mUseOldMobileType;
+
+    private boolean mConfigUseOldMobileType;
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
         addPreferencesFromResource(R.xml.x_settings_statusbar);
+        ContentResolver resolver = getActivity().getContentResolver();
 
         final PreferenceScreen prefScreen = getPreferenceScreen();
 
@@ -80,11 +86,24 @@ public class StatusBarSettings extends SettingsPreferenceFragment implements
         if (TextUtils.isEmpty(hasDisplayCutout)) {
             getPreferenceScreen().removePreference(mCutoutPref);
         }
+
+        mConfigUseOldMobileType = getResources().getBoolean(com.android.internal.R.bool.config_useOldMobileIcons);
+        int useOldMobileIcons = (!mConfigUseOldMobileType ? 1 : 0);
+        mUseOldMobileType = (SwitchPreference) findPreference(KEY_USE_OLD_MOBILETYPE);
+        mUseOldMobileType.setChecked((Settings.System.getInt(resolver,
+                Settings.System.USE_OLD_MOBILETYPE, useOldMobileIcons) == 1));
+        mUseOldMobileType.setOnPreferenceChangeListener(this);
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         ContentResolver resolver = getActivity().getContentResolver();
+        if (preference == mUseOldMobileType) {
+            boolean value = (Boolean) newValue;
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.USE_OLD_MOBILETYPE, value ? 1 : 0);
+            return true;
+        }
         return false;
     }
 
