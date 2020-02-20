@@ -56,7 +56,9 @@ public class NavbarSettings extends SettingsPreferenceFragment implements
 
     private static final String LAYOUT_SETTINGS = "navbar_layout_views";
     private static final String NAVIGATION_BAR_INVERSE = "navbar_inverse_layout";
+    private static final String KEY_NAVIGATION_BAR_ENABLED = "force_show_navbar";
 
+    private SwitchPreference mNavigationBar;
     private Preference mLayoutSettings;
     private SwitchPreference mSwapNavButtons;
 
@@ -66,9 +68,22 @@ public class NavbarSettings extends SettingsPreferenceFragment implements
         addPreferencesFromResource(R.xml.x_settings_navigation);
 
         final PreferenceScreen prefScreen = getPreferenceScreen();
+        ContentResolver resolver = getActivity().getContentResolver();
 
         mLayoutSettings = findPreference(LAYOUT_SETTINGS);
         mSwapNavButtons = findPreference(NAVIGATION_BAR_INVERSE);
+
+        final boolean defaultToNavigationBar = getResources().getBoolean(
+                com.android.internal.R.bool.config_showNavigationBar);
+        final boolean navigationBarEnabled = Settings.System.getIntForUser(
+                resolver, Settings.System.FORCE_SHOW_NAVBAR,
+                defaultToNavigationBar ? 1 : 0, UserHandle.USER_CURRENT) != 0;
+
+        mNavigationBar = (SwitchPreference) findPreference(KEY_NAVIGATION_BAR_ENABLED);
+        mNavigationBar.setChecked((Settings.System.getInt(getContentResolver(),
+                Settings.System.FORCE_SHOW_NAVBAR,
+                defaultToNavigationBar ? 1 : 0) == 1));
+        mNavigationBar.setOnPreferenceChangeListener(this);
 
         if (!XtendedUtils.isThemeEnabled("com.android.internal.systemui.navbar.threebutton")) {
             prefScreen.removePreference(mLayoutSettings);
@@ -79,6 +94,12 @@ public class NavbarSettings extends SettingsPreferenceFragment implements
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         ContentResolver resolver = getActivity().getContentResolver();
+        if (preference == mNavigationBar) {
+            boolean value = (Boolean) newValue;
+            Settings.System.putInt(resolver,
+                    Settings.System.FORCE_SHOW_NAVBAR, value ? 1 : 0);
+            return true;
+        }
         return false;
     }
 

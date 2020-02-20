@@ -992,4 +992,8 @@
     <string name="fod_gesture_title">Screen off fingerprint</string>
     <string name="fod_gesture_summary">Allows unlocking the device without having to wake up the screen first</string>
 
+    <!-- Navigation bar -->
+    <string name="navigation_bar_title">Nav bar</string>
+    <string name="navigation_bar_summary">Enable on-screen navigation keys</string>
+
 </resources>
