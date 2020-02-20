@@ -42,6 +42,7 @@ import com.android.settings.SettingsPreferenceFragment;
 import com.android.internal.logging.MetricsLogger;
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.internal.util.xtended.XtendedUtils;
+import com.xtended.support.preferences.SystemSettingSwitchPreference;
 import com.android.settings.R;
 
 import com.android.settings.search.BaseSearchIndexProvider;
@@ -57,10 +58,12 @@ public class NavbarSettings extends SettingsPreferenceFragment implements
     private static final String LAYOUT_SETTINGS = "navbar_layout_views";
     private static final String NAVIGATION_BAR_INVERSE = "navbar_inverse_layout";
     private static final String KEY_NAVIGATION_BAR_ENABLED = "force_show_navbar";
+    private static final String KEY_NAVIGATION_BAR_ARROWS = "navigation_bar_menu_arrow_keys";
 
     private SwitchPreference mNavigationBar;
     private Preference mLayoutSettings;
     private SwitchPreference mSwapNavButtons;
+    private SystemSettingSwitchPreference mNavigationArrows;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -89,6 +92,8 @@ public class NavbarSettings extends SettingsPreferenceFragment implements
             prefScreen.removePreference(mLayoutSettings);
         }
             prefScreen.removePreference(mSwapNavButtons);
+
+        mNavigationArrows = (SystemSettingSwitchPreference) findPreference(KEY_NAVIGATION_BAR_ARROWS);
     }
 
     @Override

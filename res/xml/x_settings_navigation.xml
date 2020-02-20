@@ -44,6 +44,13 @@
             android:entryValues="@array/navbar_layout_values"
             android:defaultValue="default" />
 
+     <com.xtended.support.preferences.SystemSettingSwitchPreference
+        android:key="navigation_bar_menu_arrow_keys"
+        android:title="@string/navigation_bar_arrow_keys_title"
+        android:summary="@string/navigation_bar_arrow_keys_summary"
+        android:dependency="force_show_navbar"
+        android:defaultValue="false" />
+
         <com.xtended.support.preferences.SecureSettingSwitchPreference
             android:key="navbar_inverse_layout"
             android:title="@string/navbar_invert_layout_title"
