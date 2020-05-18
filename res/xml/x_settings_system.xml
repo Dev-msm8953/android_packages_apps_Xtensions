@@ -31,6 +31,7 @@
         android:title="@string/selinux_category_title">
 
         <Preference
+            android:key="selinux_explanation"
             android:summary="@string/selinux_explanation_summary"
             android:selectable="false"/>
 
