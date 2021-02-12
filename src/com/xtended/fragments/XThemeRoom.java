@@ -56,6 +56,7 @@ import com.android.settingslib.core.lifecycle.Lifecycle;
 
 import com.xtended.support.colorpicker.ColorPickerPreference;
 import com.xtended.display.QsTileStylePreferenceController;
+import com.xtended.display.SwitchStylePreferenceController;
 
 import com.android.settings.search.BaseSearchIndexProvider;
 import com.android.settingslib.search.SearchIndexable;
@@ -116,6 +117,7 @@ public class XThemeRoom extends DashboardFragment implements
         controllers.add(new OverlayCategoryPreferenceController(context,
                 "android.theme.customization.icon_pack.android"));
         controllers.add(new QsTileStylePreferenceController(context));
+        controllers.add(new SwitchStylePreferenceController(context));
         return controllers;
     }
 
