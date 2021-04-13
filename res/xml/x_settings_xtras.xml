@@ -26,6 +26,16 @@
             android:summary="%s"
             android:defaultValue="0" />
 
+        <!-- Screenshot compression --> 
+        <com.xtended.support.preferences.SystemSettingSeekBarPreference
+            android:key="screenshot_compression"
+            android:title="@string/screenshot_compression_title"
+            android:summary="@string/screenshot_compression_summary"
+            android:defaultValue="100"
+            android:max="100"
+            settings:min="10"
+            settings:units="%" />
+
         <com.xtended.support.preferences.SystemSettingSwitchPreference
             android:key="click_partial_screenshot"
             android:title="@string/click_partial_screenshot_title"

@@ -1264,4 +1264,8 @@
     <string name="ambient_doze_brightness_title">Ambient display brightness</string>
     <string name="ambient_doze_brightness_summary">Set brightness to use during ambient display on</string>
 
+    <!-- Screenshot compression -->
+    <string name="screenshot_compression_title">Screenshot quality</string>
+    <string name="screenshot_compression_summary">Compress screenshot size with loss in image quality</string>
+
 </resources>
