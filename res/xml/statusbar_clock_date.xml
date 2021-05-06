@@ -34,6 +34,7 @@
             android:dialogTitle="@string/status_bar_clock_style_title"
             android:entries="@array/status_bar_clock_style_entries"
             android:entryValues="@array/status_bar_clock_style_values"
+            android:summary="%s"
             android:dependency="status_bar_clock" />
 
         <ListPreference
@@ -42,6 +43,7 @@
             android:dialogTitle="@string/status_bar_am_pm_title"
             android:entries="@array/status_bar_am_pm_entries"
             android:entryValues="@array/status_bar_am_pm_values"
+            android:summary="%s"
             android:dependency="status_bar_clock" />
 
         <com.xtended.support.preferences.SystemSettingSwitchPreference
@@ -56,12 +58,15 @@
             android:max="23"
             settings:min="4"
             android:defaultValue="14"
-            settings:units="dp"/>
+            settings:units="dp"
+            android:summary="%s"
+            android:dependency="status_bar_clock" />
 
         <com.xtended.support.colorpicker.ColorPickerPreference
             android:key="status_bar_clock_color"
             android:title="@string/status_bar_clock_color_title"
-            android:defaultValue="0xffffffff" />
+            android:defaultValue="0xffffffff"
+            android:dependency="status_bar_clock" />
 
         <ListPreference
             android:key="status_bar_clock_font_style"
@@ -70,7 +75,8 @@
             android:entries="@array/lock_clock_fonts_entries"
             android:entryValues="@array/lock_clock_fonts_values"
             android:summary="%s"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            android:dependency="status_bar_clock" />
 
     </PreferenceCategory>
 
@@ -91,21 +97,21 @@
             android:title="@string/clock_date_position"
             android:entries="@array/clock_date_position_entries"
             android:entryValues="@array/clock_date_position_values"
-            android:dependency="clock_date_display" />
+            android:dependency="status_bar_clock" />
 
         <ListPreference
             android:key="statusbar_clock_date_style"
             android:title="@string/clock_date_style"
             android:entries="@array/clock_date_style_entries"
             android:entryValues="@array/clock_date_style_values"
-            android:dependency="clock_date_display" />
+            android:dependency="status_bar_clock" />
 
         <ListPreference
             android:key="statusbar_clock_date_format"
             android:title="@string/clock_date_format"
             android:entries="@array/clock_date_format_entries_values"
             android:entryValues="@array/clock_date_format_entries_values"
-            android:dependency="clock_date_display" />
+            android:dependency="status_bar_clock" />
 
     </PreferenceCategory>
 
