@@ -93,10 +93,8 @@ public class NavbarSettings extends SettingsPreferenceFragment implements
                 defaultToNavigationBar ? 1 : 0) == 1));
         mNavigationBar.setOnPreferenceChangeListener(this);
 
-        if (!XtendedUtils.isThemeEnabled("com.android.internal.systemui.navbar.threebutton")) {
-            prefScreen.removePreference(mLayoutSettings);
-        }
-            prefScreen.removePreference(mSwapNavButtons);
+        mLayoutSettings.setEnabled(!XtendedUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural"));
+        mSwapNavButtons.setEnabled(!XtendedUtils.isThemeEnabled("com.android.internal.systemui.navbar.gestural"));
 
         mNavigationArrows = (SystemSettingSwitchPreference) findPreference(KEY_NAVIGATION_BAR_ARROWS);
         mHandler = new Handler();
