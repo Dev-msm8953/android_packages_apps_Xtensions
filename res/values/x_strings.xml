@@ -1268,4 +1268,8 @@
     <string name="screenshot_compression_title">Screenshot quality</string>
     <string name="screenshot_compression_summary">Compress screenshot size with loss in image quality</string>
 
+    <!-- Allow to suppress notifications sound/vibration if screen is ON -->
+    <string name="notification_sound_vib_screen_on_title">Notification sound if active</string>
+    <string name="notification_sound_vib_screen_on_summary">Play sound and vibration for notifications when screen is on</string>
+
 </resources>
